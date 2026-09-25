@@ -1,0 +1,8 @@
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { useApp } from '../context/AppContext';
+import { money } from '../lib/api';
+
+export const MandiTable = ({ prices, compact = false }) => {
+  const { t } = useApp();
+  return <div className={`mandi-table ${compact ? 'compact-table' : ''}`}><div className="mandi-row mandi-header"><span>{t('फसल / उत्पाद', 'Crop / product')}</span><span>{t('मंडी', 'Mandi')}</span><span>{t('मंडी भाव', 'Market price')}</span><span>{t('बदलाव', 'Change')}</span></div>{prices.length ? prices.map(p => <div className="mandi-row" key={p.id} data-testid={`mandi-row-${p.id}`}><span className="crop-name"><span className="crop-emoji">{p.emoji}</span><span>{t(p.crop_hi, p.crop)}<small>{p.unit === 'quintal' ? t('प्रति क्विंटल', 'per quintal') : p.unit}</small></span></span><span className="mandi-name" data-testid={`mandi-location-${p.id}`}>{p.mandi}</span><strong data-testid={`mandi-price-${p.id}`}>{money(p.price)}</strong><span className={`price-change ${p.change < 0 ? 'negative' : p.change === 0 ? 'neutral' : ''}`} data-testid={`mandi-change-${p.id}`}>{p.change < 0 ? <TrendingDown size={13} /> : p.change === 0 ? <Minus size={13} /> : <TrendingUp size={13} />}{Math.abs(p.change)}</span></div>) : <p className="empty-state" data-testid="mandi-empty">{t('कोई भाव नहीं मिला। दूसरी फसल या मंडी चुनें।', 'No prices found. Try another crop or mandi.')}</p>}</div>;
+};
